@@ -1,21 +1,29 @@
-# Two of Us — Cycle Tracker (static version)
+# Two of Us — Cycle Tracker (v2: mood phase + timeline)
 
-No build step. Two files: `index.html` and `bloom-icon.svg`.
+Two files: `index.html` and `bloom-icon.svg`. No build step, no Babel, no Tailwind — JSX is pre-compiled to plain ES5 JavaScript, same approach as the last working version.
 
-## Deploy on GitHub Pages (matches how your other repos are set up)
+## What's new in this update
 
-1. Put `index.html` and `bloom-icon.svg` at the **root** of the repo (same level, not inside a subfolder).
+- **Mood is now a multi-day phase, not a single day.** Log every day the mood lasts (as many as you need) — each one is its own entry, and nothing gets overwritten. The app automatically figures out which upcoming period each mood day belongs to by finding the earliest logged mood day before that period's bleeding start.
+- **Fixes the "29 days" bug**: previously, logging a mood day before that cycle's bleeding start had been recorded could silently overwrite an unrelated earlier cycle's mood day and badly skew the prediction. That's no longer possible — mood days are stored independently and grouped automatically.
+- **New Timeline tab**: shows every single thing you've ever logged — bleeding starts, ovulation, mood days, intimacy — in one chronological list, each with a small × button to delete a mistaken entry.
+- Home screen now shows "Mood phase" instead of "Mood day," including a live indicator if you're currently mid-phase (e.g. "day 2, started Wed").
+
+## If your existing data has the July mix-up
+
+Deploying this update won't automatically fix mood days that got tangled up under the old logic. After updating:
+1. Open the **Timeline** tab.
+2. Delete any mood-day entry that looks wrong (e.g. one attached to the wrong month).
+3. Re-log the correct days from the **Log** tab (you can pick any past date).
+
+## Deploy on GitHub Pages
+
+1. Put `index.html` and `bloom-icon.svg` at the **root** of the repo.
 2. Repo **Settings → Pages** → **Source: Deploy from a branch** → branch `main`, folder `/ (root)`.
-3. Save, wait ~30–60 seconds, then visit `https://mikemcmah2.github.io/Bloom/`.
+3. Wait ~30–60 seconds, then reload your Pages URL.
 
-That's it — no `npm install`, no build, no GitHub Actions needed.
+## Notes
 
-## How it works
-
-- React, Babel, and Tailwind load from public CDNs at page load, and the page's own script is transformed from JSX to JS right in the browser. This is why there's no build step, at the cost of a slightly slower first load than a bundled app.
-- Your password is hashed and stored in `localStorage`; it's a screen against casual snooping, not encryption of the data itself.
-- Cycle and intimacy data live in `localStorage` in whatever browser you use — no sync between devices.
-
-## Editing
-
-Everything — logic, styling, and markup — is in `index.html`. Search for the part you want to change (e.g. `SEED_CYCLES` for the starting data, `COLORS` for the palette) and edit directly; refresh the page to see changes, no rebuild required.
+- Password is hashed and stored in `localStorage`; it deters casual snooping, it isn't encryption.
+- Data lives in `localStorage` in whatever browser you use — no sync between devices.
+- If anything ever fails to load, the page shows the exact error as readable text instead of staying blank.

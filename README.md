@@ -1,29 +1,23 @@
-# Two of Us — Cycle Tracker (v2: mood phase + timeline)
+# Two of Us — Cycle Tracker (v3: real app icon on iPhone)
 
-Two files: `index.html` and `bloom-icon.svg`. No build step, no Babel, no Tailwind — JSX is pre-compiled to plain ES5 JavaScript, same approach as the last working version.
+## What's new
 
-## What's new in this update
+iOS's "Add to Home Screen" requires an actual PNG image — it can't use an SVG for the home-screen icon, which is why the icon wasn't showing before. This version adds real PNG icons at the sizes iOS (and Android/desktop) expect, plus a small web manifest so the name and background color show correctly too.
 
-- **Mood is now a multi-day phase, not a single day.** Log every day the mood lasts (as many as you need) — each one is its own entry, and nothing gets overwritten. The app automatically figures out which upcoming period each mood day belongs to by finding the earliest logged mood day before that period's bleeding start.
-- **Fixes the "29 days" bug**: previously, logging a mood day before that cycle's bleeding start had been recorded could silently overwrite an unrelated earlier cycle's mood day and badly skew the prediction. That's no longer possible — mood days are stored independently and grouped automatically.
-- **New Timeline tab**: shows every single thing you've ever logged — bleeding starts, ovulation, mood days, intimacy — in one chronological list, each with a small × button to delete a mistaken entry.
-- Home screen now shows "Mood phase" instead of "Mood day," including a live indicator if you're currently mid-phase (e.g. "day 2, started Wed").
+## Files in this package
 
-## If your existing data has the July mix-up
+Upload **all of these** to the root of your repo (same place as before):
+- `index.html` (updated — references the new icon files)
+- `bloom-icon.svg` (still used as the browser tab favicon on modern browsers)
+- `apple-touch-icon.png` (180×180 — this is the one iOS actually uses)
+- `icon-192.png`, `icon-512.png` (used by the web manifest / Android)
+- `favicon-32.png`, `favicon-16.png` (fallback browser tab icon)
+- `manifest.json` (tells the phone the app's name, colors, and icons)
 
-Deploying this update won't automatically fix mood days that got tangled up under the old logic. After updating:
-1. Open the **Timeline** tab.
-2. Delete any mood-day entry that looks wrong (e.g. one attached to the wrong month).
-3. Re-log the correct days from the **Log** tab (you can pick any past date).
+## After uploading
 
-## Deploy on GitHub Pages
+1. Reload the site once in Safari on the iPhone (to update the cache).
+2. Tap the **Share** button → **Add to Home Screen**.
+3. The Bloom icon should now appear correctly, both in the "Add to Home Screen" preview and on the home screen itself.
 
-1. Put `index.html` and `bloom-icon.svg` at the **root** of the repo.
-2. Repo **Settings → Pages** → **Source: Deploy from a branch** → branch `main`, folder `/ (root)`.
-3. Wait ~30–60 seconds, then reload your Pages URL.
-
-## Notes
-
-- Password is hashed and stored in `localStorage`; it deters casual snooping, it isn't encryption.
-- Data lives in `localStorage` in whatever browser you use — no sync between devices.
-- If anything ever fails to load, the page shows the exact error as readable text instead of staying blank.
+If it still shows a plain/blank icon, remove any previously-added home screen icon for this site first (long-press → Remove), since iOS sometimes caches the old blank one.

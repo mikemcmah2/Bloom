@@ -1,23 +1,32 @@
-# Two of Us — Cycle Tracker (v3: real app icon on iPhone)
+# Two of Us — Cycle Tracker (v4: fully self-contained, no external scripts)
 
-## What's new
+## What changed
 
-iOS's "Add to Home Screen" requires an actual PNG image — it can't use an SVG for the home-screen icon, which is why the icon wasn't showing before. This version adds real PNG icons at the sizes iOS (and Android/desktop) expect, plus a small web manifest so the name and background color show correctly too.
+Every previous version loaded React from an external CDN (unpkg, then jsdelivr). The persistent "Script error." you kept seeing is the generic message browsers show when a *cross-origin* script fails — meaning something was blocking those CDN requests, most likely a content/ad blocker.
 
-## Files in this package
+This version has **zero external script dependencies**. React and ReactDOM are embedded directly inside `index.html` itself — there is nothing left to block. The only external requests this page makes are for the Google Fonts stylesheet (cosmetic only; the app works fine without it loading).
 
-Upload **all of these** to the root of your repo (same place as before):
-- `index.html` (updated — references the new icon files)
-- `bloom-icon.svg` (still used as the browser tab favicon on modern browsers)
-- `apple-touch-icon.png` (180×180 — this is the one iOS actually uses)
-- `icon-192.png`, `icon-512.png` (used by the web manifest / Android)
-- `favicon-32.png`, `favicon-16.png` (fallback browser tab icon)
-- `manifest.json` (tells the phone the app's name, colors, and icons)
+I tested this exact file in a browser with every external network request blocked, and it renders perfectly — so this should now work regardless of any blocker or filter on your device.
 
-## After uploading
+## Files to upload (all 8, same as before)
 
-1. Reload the site once in Safari on the iPhone (to update the cache).
-2. Tap the **Share** button → **Add to Home Screen**.
-3. The Bloom icon should now appear correctly, both in the "Add to Home Screen" preview and on the home screen itself.
+- `index.html` (now much bigger — ~600KB, since React is embedded in it)
+- `bloom-icon.svg`
+- `apple-touch-icon.png`
+- `icon-192.png`, `icon-512.png`
+- `favicon-32.png`, `favicon-16.png`
+- `manifest.json`
 
-If it still shows a plain/blank icon, remove any previously-added home screen icon for this site first (long-press → Remove), since iOS sometimes caches the old blank one.
+## Deploy
+
+Same as always: upload these to the root of your `Bloom` repo (overwrite existing files), commit, wait ~30–60 seconds, reload.
+
+## About your data
+
+Since this is a fresh reload of the page, nothing about your previously-entered data changes — it's still sitting in this browser's `localStorage`, keyed by the site's origin, completely separate from the app's code. If you do want a clean start, you're welcome to just start re-entering your last few cycles once this version is confirmed working.
+
+## Notes
+
+- Password is hashed and stored in `localStorage`; it deters casual snooping, it isn't encryption.
+- Data lives in `localStorage` in whatever browser you use — no sync between devices.
+- If anything still fails to load, the page shows the exact error as readable text — but there's very little left that could fail now.
